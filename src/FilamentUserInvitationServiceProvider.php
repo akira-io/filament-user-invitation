@@ -3,6 +3,7 @@
 namespace Akira\FilamentUserInvitation;
 
 use Akira\FilamentUserInvitation\Commands\FilamentUserInvitationCommand;
+use Akira\FilamentUserInvitation\Livewire\AcceptInvitation;
 use Akira\FilamentUserInvitation\Testing\TestsFilamentUserInvitation;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
@@ -11,6 +12,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -93,7 +95,8 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentUserInvitation());
-
+        
+        Livewire::component('some-component', AcceptInvitation::class);
     }
 
     /**

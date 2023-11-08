@@ -5,8 +5,9 @@
     namespace Akira\FilamentUserInvitation\Models;
     
     use Illuminate\Database\Eloquent\Model;
+    use  Illuminate\Foundation\Auth\User as BaseUser;
     
-    class User extends  Model
+    class User extends  BaseUser
     {
         
         protected $fillable = [

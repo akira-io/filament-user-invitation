@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akira\FilamentUserInvitation\Livewire;
 
+use Akira\FilamentUserInvitation\Models\User;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Component;
@@ -127,7 +128,7 @@ class AcceptInvitation extends SimplePage
 
     public function create(): void
     {
-        ray('fsfs');
+
         $this->invitationModel = UserInvitation::find($this->invitation);
 
         $user = User::create([
