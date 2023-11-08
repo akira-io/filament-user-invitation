@@ -95,7 +95,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentUserInvitation());
-        
+
         Livewire::component('some-component', AcceptInvitation::class);
     }
 
