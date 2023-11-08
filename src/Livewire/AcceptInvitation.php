@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akira\FilamentUserInvitation\Livewire;
 
+use Akira\FilamentUserInvitation\Helpers\ColorHelper;
 use Akira\FilamentUserInvitation\Models\User;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
 use Filament\Actions\Action;
@@ -122,6 +123,7 @@ class AcceptInvitation extends SimplePage
     {
 
         return Action::make('register')
+            ->color(ColorHelper::primary())
             ->label(__('filament-panels::pages/auth/register.form.actions.register.label'))
             ->submit('register');
     }
