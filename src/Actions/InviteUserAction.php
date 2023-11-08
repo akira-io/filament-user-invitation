@@ -9,13 +9,12 @@ use Akira\FilamentUserInvitation\Models\UserInvitation;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 class InviteUserAction
 {
     public static function make(): Action
     {
-
         return Action::make('inviteUser')
             ->label(__('Invite User'))
             ->form([

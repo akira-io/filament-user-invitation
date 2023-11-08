@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use URL;
+use Illuminate\Support\Facades\URL;
 
 class UserInvitationMail extends Mailable
 {

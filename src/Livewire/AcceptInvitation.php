@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Akira\FilamentUserInvitation\Livewire;
 
 use Akira\FilamentUserInvitation\Models\UserInvitation;
-use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
