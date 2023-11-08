@@ -62,7 +62,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
 
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
     }
 
     public function packageBooted(): void
@@ -84,7 +84,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament-user-invitation/{$file->getFilename()}"),
                 ], 'filament-user-invitation-stubs');
@@ -126,8 +126,8 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         return [
             // AlpineComponent::make('filament-user-invitation', __DIR__ . '/../resources/dist/components/filament-user-invitation.js'),
-            Css::make('filament-user-invitation-styles', __DIR__.'/../resources/dist/filament-user-invitation.css'),
-            Js::make('filament-user-invitation-scripts', __DIR__.'/../resources/dist/filament-user-invitation.js'),
+            Css::make('filament-user-invitation-styles', __DIR__ . '/../resources/dist/filament-user-invitation.css'),
+            Js::make('filament-user-invitation-scripts', __DIR__ . '/../resources/dist/filament-user-invitation.js'),
         ];
     }
 

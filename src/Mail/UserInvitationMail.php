@@ -12,7 +12,8 @@ use URL;
 
 class UserInvitationMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.
@@ -28,7 +29,7 @@ class UserInvitationMail extends Mailable
     {
 
         return new Envelope(
-            subject: 'Invitation to join '.config('app.name'),
+            subject: 'Invitation to join ' . config('app.name'),
         );
     }
 
