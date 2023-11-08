@@ -4,7 +4,6 @@ namespace Akira\FilamentUserInvitation;
 
 use Akira\FilamentUserInvitation\Commands\FilamentUserInvitationCommand;
 use Akira\FilamentUserInvitation\Testing\TestsFilamentUserInvitation;
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
@@ -24,6 +23,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
     public function configurePackage(Package $package): void
     {
+
         /*
          * This class is a Package Service Provider
          *
@@ -32,6 +32,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
         $package->name(static::$name)
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
+
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
@@ -60,19 +61,22 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     public function packageBooted(): void
     {
+
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
-            $this->getAssetPackageName()
+            $this->getAssetPackageName(),
         );
 
         FilamentAsset::registerScriptData(
             $this->getScriptData(),
-            $this->getAssetPackageName()
+            $this->getAssetPackageName(),
         );
 
         // Icon Registration
@@ -80,7 +84,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament-user-invitation/{$file->getFilename()}"),
                 ], 'filament-user-invitation-stubs');
@@ -89,23 +93,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentUserInvitation());
-    }
 
-    protected function getAssetPackageName(): ?string
-    {
-        return 'akira/filament-user-invitation';
-    }
-
-    /**
-     * @return array<Asset>
-     */
-    protected function getAssets(): array
-    {
-        return [
-            // AlpineComponent::make('filament-user-invitation', __DIR__ . '/../resources/dist/components/filament-user-invitation.js'),
-            Css::make('filament-user-invitation-styles', __DIR__ . '/../resources/dist/filament-user-invitation.css'),
-            Js::make('filament-user-invitation-scripts', __DIR__ . '/../resources/dist/filament-user-invitation.js'),
-        ];
     }
 
     /**
@@ -113,6 +101,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
+
         return [
             FilamentUserInvitationCommand::class,
         ];
@@ -121,8 +110,48 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
     /**
      * @return array<string>
      */
+    protected function getMigrations(): array
+    {
+
+        return [
+            'create_filament-user-invitation_table',
+        ];
+    }
+
+    /**
+     * @return array<Asset>
+     */
+    protected function getAssets(): array
+    {
+
+        return [
+            // AlpineComponent::make('filament-user-invitation', __DIR__ . '/../resources/dist/components/filament-user-invitation.js'),
+            Css::make('filament-user-invitation-styles', __DIR__.'/../resources/dist/filament-user-invitation.css'),
+            Js::make('filament-user-invitation-scripts', __DIR__.'/../resources/dist/filament-user-invitation.js'),
+        ];
+    }
+
+    protected function getAssetPackageName(): ?string
+    {
+
+        return 'akira/filament-user-invitation';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getScriptData(): array
+    {
+
+        return [];
+    }
+
+    /**
+     * @return array<string>
+     */
     protected function getIcons(): array
     {
+
         return [];
     }
 
@@ -131,24 +160,7 @@ class FilamentUserInvitationServiceProvider extends PackageServiceProvider
      */
     protected function getRoutes(): array
     {
-        return [];
-    }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
-    {
         return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getMigrations(): array
-    {
-        return [
-            'create_filament-user-invitation_table',
-        ];
     }
 }
