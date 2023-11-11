@@ -7,6 +7,7 @@ namespace Akira\FilamentUserInvitation\Livewire;
 use Akira\FilamentUserInvitation\Models\User;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
 use Akira\FilamentUserInvitation\Resources\UserInvitationResource;
+use AllowDynamicProperties;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
 
+#[AllowDynamicProperties]
+/** mixin */
 class AcceptInvitation extends SimplePage
 {
     use HasRoutes;
@@ -75,7 +78,6 @@ class AcceptInvitation extends SimplePage
 
     private function fillFormWithInvitationEmail(): void
     {
-
         $this->form->fill([
             'email' => $this->invitationModel?->email,
         ]);
@@ -212,8 +214,7 @@ class AcceptInvitation extends SimplePage
 
     private function createUser(): User
     {
-
-        return User::create([
+        return User::query()->create([
             'name' => $this->form->getState()['name'],
             'email' => $this->invitationModel->email,
             'password' => Hash::make($this->form->getState()['password']),

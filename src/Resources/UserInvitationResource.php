@@ -34,11 +34,11 @@ class UserInvitationResource extends Resource
     public static function getNavigationBadge(): ?string
     {
 
-        if (config('filament-user-invitation.with_navigation_badge')) {
-            return UserInvitation::query()->count();
+        if (! config('filament-user-invitation.with_navigation_badge')) {
+            return null;
         }
 
-        return null;
+        return (string) UserInvitation::query()->count();
     }
 
     public static function getLabel(): ?string

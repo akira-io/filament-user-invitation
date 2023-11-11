@@ -24,8 +24,9 @@ class InviteUserAction
                     ->required(),
             ])->action(function ($data) {
 
-                $user = User::where('email', $data['email'])->first();
-                $invitation = UserInvitation::where('email', $data['email'])->first();
+                // @phpstan-ignore-next-line
+                $user = User::query()->where('email', $data['email'])->first();
+                $invitation = UserInvitation::query()->where('email', $data['email'])->first();
 
                 if ($user || $invitation) {
                     Notification::make('UserInvitationNotification')
