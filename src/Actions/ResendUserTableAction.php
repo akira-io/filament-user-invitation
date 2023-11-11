@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Akira\FilamentUserInvitation\Actions;
 
-use Akira\FilamentUserInvitation\Mail\UserInvitationMail;
+use Akira\FilamentUserInvitation\Notifications\UserInvitationNotification;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
-use Illuminate\Support\Facades\Mail;
 
 class ResendUserTableAction
 {
@@ -17,8 +16,7 @@ class ResendUserTableAction
             ->label(__('Resend Invite'))
             ->icon('heroicon-o-paper-airplane')
             ->action(function ($record) {
-
-                Mail::to($record->email)->send(new UserInvitationMail($record));
+                $record->notify(new UserInvitationNotification());
                 Notification::make('UserInvitationNotification')
                     ->body(__('User invitation sent successfully.'))
                     ->icon('heroicon-o-done')

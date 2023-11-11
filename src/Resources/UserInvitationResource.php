@@ -25,6 +25,10 @@ class UserInvitationResource extends Resource
                     ->badge()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make(__('expires_at'))
+                    ->dateTime()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make(__('created_at'))
                     ->dateTime()
                     ->sortable(),

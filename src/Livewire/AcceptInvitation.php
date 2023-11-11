@@ -4,39 +4,126 @@ declare(strict_types=1);
 
 namespace Akira\FilamentUserInvitation\Livewire;
 
-use Akira\FilamentUserInvitation\Helpers\ColorHelper;
 use Akira\FilamentUserInvitation\Models\User;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
+use Akira\FilamentUserInvitation\Resources\UserInvitationResource;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Pages\Concerns\HasRoutes;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Dashboard;
 use Filament\Pages\SimplePage;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
 
 class AcceptInvitation extends SimplePage
 {
+    use HasRoutes;
     use InteractsWithFormActions;
     use InteractsWithForms;
 
     public static string $view = 'filament-user-invitation::livewire.accept-invitation';
 
-    public int $invitation;
+    protected static string $resource = UserInvitationResource::class;
+
+    public string $invitation;
 
     public ?array $data = [];
 
-    private UserInvitation $invitationModel;
+    private ?Model $invitationModel;
+
+    public static function routes(Panel $panel): void
+    {
+        Route::get('/invitation/{invitation}/', static::class)
+            ->middleware(static::getRouteMiddleware($panel))
+            ->withoutMiddleware(static::getWithoutRouteMiddleware($panel))
+            ->name('filament-user-invitation.accept-invitation');
+    }
 
     public function mount(): void
     {
-        $this->invitationModel = UserInvitation::findOrFail($this->invitation);
+        $this->invitationModel = $this->getInvitation();
+        $this->fillFormWithInvitationEmail();
+    }
+
+    private function getInvitation(): ?UserInvitation
+    {
+        $invitation = UserInvitation::query()->firstWhere('token', $this->invitation);
+        if (! $invitation) {
+            $this->invitationNotFoundNotification();
+
+            return null;
+        }
+        if ($this->isInvitationExpired($invitation)) {
+
+            $this->expiredInvitationNotification();
+
+            $this->redirect(filament()->getLoginUrl());
+
+            return null;
+        }
+
+        return $invitation;
+    }
+
+    private function fillFormWithInvitationEmail(): void
+    {
+
         $this->form->fill([
-            'email' => $this->invitationModel->email,
+            'email' => $this->invitationModel?->email,
         ]);
+    }
+
+    private function invitationNotFoundNotification(): void
+    {
+
+        Notification::make()
+            ->title(__('Invalid invitation'))
+            ->body(__('The invitation you are trying to accept is invalid. Please contact the administrator.'))
+            ->danger()
+            ->send();
+    }
+
+    private function isInvitationExpired(
+        Model | UserInvitation | \LaravelIdea\Helper\Akira\FilamentUserInvitation\Models\_IH_UserInvitation_QB | \Illuminate\Database\Eloquent\Builder $invitation
+    ): bool {
+
+        return now()->format('Y-m-d H:i:s') > $invitation->expires_at->format('Y-m-d H:i:s');
+    }
+
+    private function expiredInvitationNotification(): void
+    {
+
+        Notification::make()
+            ->title(__('Expired invitation'))
+            ->body(__('Your invitation has expired, please contact the administrator.'))
+            ->danger()
+            ->send();
+    }
+
+    public function getHeading(): string
+    {
+
+        return 'Accept Invitation';
+    }
+
+    public function getSubheading(): string
+    {
+
+        return 'Create your user to accept the invitation.';
+    }
+
+    public function hasLogo(): bool
+    {
+
+        return false;
     }
 
     public function form(Form $form): Form
@@ -49,24 +136,6 @@ class AcceptInvitation extends SimplePage
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ])->statePath('data');
-    }
-
-    public function getHeading(): string
-    {
-
-        return 'Accept Invitation';
-    }
-
-    public function hasLogo(): bool
-    {
-
-        return false;
-    }
-
-    public function getSubheading(): string
-    {
-
-        return 'Create your user to accept the invitation.';
     }
 
     protected function getNameFormComponent(): Component
@@ -123,7 +192,6 @@ class AcceptInvitation extends SimplePage
     {
 
         return Action::make('register')
-            ->color(ColorHelper::primary())
             ->label(__('filament-panels::pages/auth/register.form.actions.register.label'))
             ->submit('register');
     }
@@ -131,15 +199,24 @@ class AcceptInvitation extends SimplePage
     public function create(): void
     {
 
-        $this->invitationModel = UserInvitation::find($this->invitation);
+        $this->invitationModel = $this->getInvitation();
 
-        $user = User::create([
+        $user = $this->createUser();
+
+        auth()->login($user);
+
+        $this->invitationModel->delete();
+
+        $this->redirect(Dashboard::getUrl());
+    }
+
+    private function createUser(): User
+    {
+
+        return User::create([
             'name' => $this->form->getState()['name'],
             'email' => $this->invitationModel->email,
             'password' => Hash::make($this->form->getState()['password']),
         ]);
-        auth()->login($user);
-        $this->invitationModel->delete();
-        $this->redirect(Dashboard::getUrl());
     }
 }

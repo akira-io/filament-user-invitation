@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Akira\FilamentUserInvitation\Actions;
 
-use Akira\FilamentUserInvitation\Mail\UserInvitationMail;
 use Akira\FilamentUserInvitation\Models\User;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
+use Akira\FilamentUserInvitation\Notifications\UserInvitationNotification;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Mail;
 
 class InviteUserAction
 {
@@ -37,8 +36,13 @@ class InviteUserAction
                     return;
                 }
 
-                $invitation = UserInvitation::create($data);
-                Mail::to($invitation->email)->send(new UserInvitationMail($invitation));
+                $invitation = UserInvitation::create([
+                    'email' => $data['email'],
+                    'token' => bin2hex(random_bytes(32)),
+                    'expires_at' => now()->addDay(),
+                ]);
+
+                $invitation->notify(new UserInvitationNotification());
 
                 Notification::make('UserInvitationNotification')
                     ->body(__('User invitation sent successfully.'))

@@ -7,4 +7,6 @@ return [
     'colors' => [
         'primary' => Color::Purple,
     ],
+
+    'accept_invitation_route' => 'invitation/{invitation}/accept',
 ];
