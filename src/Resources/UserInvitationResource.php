@@ -2,6 +2,7 @@
 
 namespace Akira\FilamentUserInvitation\Resources;
 
+use Akira\FilamentUserInvitation\Actions\ResendUserTableAction;
 use Akira\FilamentUserInvitation\Models\UserInvitation;
 use Akira\FilamentUserInvitation\Resources\UserInvitationResource\Pages\ListUserInvitation;
 use Filament\Resources\Resource;
@@ -33,6 +34,7 @@ class UserInvitationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
+                ResendUserTableAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
