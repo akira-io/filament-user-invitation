@@ -17,7 +17,7 @@ class InviteUserAction
     {
 
         return Action::make('inviteUser')
-            ->label(__('Invite User'))
+            ->label(__('filament-user-invitation::actions.invite_user'))
             ->form([
                 TextInput::make('email')
                     ->email()
@@ -25,11 +25,11 @@ class InviteUserAction
             ])->action(function ($data) {
 
                 $user = User::where('email', $data['email'])->first();
+                $invitation = UserInvitation::where('email', $data['email'])->first();
 
-                if ($user) {
+                if ($user || $invitation) {
                     Notification::make('UserInvitationNotification')
-                        ->body(__('User already exists.'))
-                        ->icon('heroicon-o-exclamation')
+                        ->body(__('User or invitation already exists.'))
                         ->danger()
                         ->send();
 
@@ -46,7 +46,6 @@ class InviteUserAction
 
                 Notification::make('UserInvitationNotification')
                     ->body(__('User invitation sent successfully.'))
-                    ->icon('heroicon-o-done')
                     ->success()
                     ->send();
             });

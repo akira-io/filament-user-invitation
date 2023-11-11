@@ -1,12 +1,15 @@
 <?php
 
 // config for Akira/FilamentUserInvitation
-use Filament\Support\Colors\Color;
 
 return [
-    'colors' => [
-        'primary' => Color::Purple,
-    ],
-
     'accept_invitation_route' => 'invitation/{invitation}/accept',
+
+    'with_navigation_icon' => true,
+
+    'navigation_icon' => 'heroicon-o-envelope',
+
+    'with_navigation_badge' => true,
+
+    'with_navigation_group' => false,
 ];

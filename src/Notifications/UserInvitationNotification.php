@@ -23,9 +23,14 @@ class UserInvitationNotification extends Notification
     {
 
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', $this->signedUrl($notifiable))
-            ->line('Thank you for using our application!');
+            ->greeting(__('Hello!'))
+            ->line(__('You have been invited to join') . config('app.name'))
+            ->line(__('To accept this invitation, click the button below'))
+            ->action(__('Accept the Invitation'), $this->signedUrl($notifiable))
+            ->line(__('If you did not expect to receive an invitation to this team, you may discard this email'))
+            ->line('Thank you for using our application!')
+            ->salutation(__('Regards'))
+            ->subject(__('Invitation to join') . config('app.name'));
     }
 
     private function signedUrl($notifiable): string
