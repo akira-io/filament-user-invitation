@@ -62,8 +62,11 @@ class AcceptInvitation extends SimplePage
         if (! $invitation) {
             $this->invitationNotFoundNotification();
 
+            $this->redirect(filament()->getLoginUrl());
+
             return null;
         }
+
         if ($this->isInvitationExpired($invitation)) {
 
             $this->expiredInvitationNotification();
